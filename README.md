@@ -1,8 +1,8 @@
 # Introduction
 
-This repo contains a Python library, *NGS_utils*, to plot input data and output data from multiseq (an R package under development in the Stephens lab at the University of Chicago) in the [UCSC Genome Browser](http://genome.ucsc.edu/).
+This repo contains a Python library, *NGS_utils*, to plot input data and output data from *multiseq*, an R package under development in the Stephens lab at the University of Chicago, in the [UCSC Genome Browser](http://genome.ucsc.edu/).
 
-This library build extensively on the [genome](https://github.com/gmcvicker/genome) library by Graham McVicker. 
+This library builds extensively on the [genome](https://github.com/gmcvicker/genome) library by Graham McVicker. 
 
 This document summarizes how to setup this software system and how to use the python scripts simulationToTrackHub.py, samplesheetToTrackHub.py and multiseqToTrackHub.py . If you have any questions or run into any difficulty, please don't hesitate to contact me!
 
