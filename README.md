@@ -69,15 +69,13 @@ you should be able to pass a flag to your cluster submission command (e.g. the -
 
 
 ### simulationToTrackHub.py: example of usage
-This code has been created to plot in the UCSC Genome Browser some data specific to our workflow. It plots a set of bigWig files containing data over a small region of the genome (chr5:131989505-132120576 in the example below) and creates a Track Hub that you can visualize in the Genome Browser.
-
-Note: with default options, this code can only be run on the PPS cluster if you are part of the stephenslab group on the cluster. If you wish to use this code elsewhere, you need to specify a folder with http access using option --mountpoint and the http address associated to it using option --http_address.
+This code has been created to plot in the UCSC Genome Browser some simulation data specific to our workflow. Our simulations produce a set of bigWig files that cover a small genomic region (chr5:131989505-132120576 in the example below). The code creates a Track Hub with the simulated data that can be visualized in the Genome Browser.
 
 From the terminal cd into the repository and type:
 
     python simulationToTrackHub.py --hub_name testNGS/sim data/sim/samplesheet.sim.txt 
 
-If correctly executed with default mountpoint and http address, the python code will print the following message:
+If correctly executed, the python code will print the following message:
 
     go to http://genome.ucsc.edu/cgi-bin/hgHubConnect and click on the My Hubs window    
     copy paste the following string in the URL field
@@ -87,7 +85,7 @@ If correctly executed with default mountpoint and http address, the python code 
 
 The region of interest in this example data is chr5:131989505-132120576
 
-The output looks like this:
+This is a screenshot of the data in the Genome Browser:
 ![Image](plots/sim.png?raw=true)
 
 ### samplesheetToTrackHub.py: example of usage
@@ -100,9 +98,12 @@ Make sure you have enough memory to run this command (use ql 10g on the PPS clus
 
 
 ### multiseqToTrackHub.py: example of usage
-After running multiseq on a specified region (chr5:131989505-132120576 in the data/multiseq folder) we obtain 3 output files: *effect_mean_var.txt.gz* a file with two columns (first column a mean effect and second column effect squared standard error), multiseq.effect.2sd.bed and multiseq.effect.3sd.bed, two bed files containing significant intervals (as computed by multiseq) at 2 and 3 sd (respectively).
+After running multiseq on a specified region (chr5:131989505-132120576 in the data/multiseq folder) we obtain 3 output files: *effect_mean_var.txt.gz* a file with two columns (first column a mean effect and second column squared standard error of the effect), *multiseq.effect.2sd.bed* and *multiseq.effect.3sd.bed*, two bed files containing significant intervals (as computed by multiseq) at 2 and 3 sd (respectively).
 
-The python script multiseqToTrackHub.py creates a track hub with the effect and the respective standard error and with the significant intervals at 2 and 3 sd in the UCSC Genome Browser.
+The python script multiseqToTrackHub.py creates a track hub with:
+1. the effect and the respective standard error 
+2. the significant intervals at 2 and 3 sd 
+in the UCSC Genome Browser.
  
     python multiseqToTrackHub.py --hub_name testNGS/multiseq --multiseq_folder data/multiseq chr5:131989505-132120576 data/chromosome.lengths.hg19.txt
 
@@ -113,5 +114,5 @@ If correctly executed, the python code will print the following message:
    "some https address"/testNGS/multiseq/hub.txt
    note: center your genome browser around chr5:131989505-132120576 and make track visible
 
-The output looks like this:
+This is a screenshot of output from multiseq in the Genome Browser:
 ![Image](plots/multiseq.png?raw=true)
