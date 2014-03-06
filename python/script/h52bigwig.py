@@ -1,3 +1,4 @@
+#! /usr/bin/env python                                                                                  
 """
 h52bigwig.py - convert hdf5file to bigwig file
 ==============================================

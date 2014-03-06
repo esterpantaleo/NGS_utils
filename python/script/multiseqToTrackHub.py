@@ -1,3 +1,4 @@
+#! /usr/bin/env python                                                                                  
 """ 
 multiseqToTrackHub.py - plot multiseq output in a track hub in the UCSC genome browser
 =========================================================================================
@@ -89,14 +90,14 @@ def main():
     args = parse_args()
     ngs = NGS_utils.utils.NGS(assembly=args.assembly)
 
-    split_region = args.region.replace(':',' ').replace('-',' ').split()
+    split_region = args.region.replace(':', ' ').replace('-', ' ').split()
     if (len(split_region) != 3):
            sys.exit("invalid region: example of a valid region is chr1:2345-234567 ")
     chrom = split_region[0]
     locus_start = split_region[1]
     locus_end = split_region[2]
     hub_dir = os.path.join(args.mountpoint, args.hub_name)
-    hub_name_string = args.hub_name.replace("/",".")     
+    hub_name_string = args.hub_name.replace("/", ".")     
     if not os.path.exists(hub_dir):
         os.makedirs(hub_dir)
     assembly_dir = os.path.join(hub_dir, args.assembly)
@@ -105,7 +106,7 @@ def main():
  
     tmpdir = tempfile.mkdtemp()
 
-    multiseq_folder = os.path.join(args.multiseq_folder, ".".join([chrom,locus_start,locus_end]))
+    multiseq_folder = os.path.join(args.multiseq_folder, ".".join([chrom, locus_start, locus_end]))
     multiseq_file = os.path.join(multiseq_folder, "effect_mean_var.txt.gz")
     #create bigWig file with mean
     mean_track = os.path.join(assembly_dir, "mean_track.bw")

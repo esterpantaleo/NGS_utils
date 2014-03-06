@@ -1,6 +1,6 @@
 # Introduction
 
-This repo contains a Python library, *NGS_utils*, to plot input data and output data from *multiseq*, an R package under development in the Stephens lab at the University of Chicago, in the [UCSC Genome Browser](http://genome.ucsc.edu/).
+This repo contains a Python library, *NGS_utils*, to plot input data and output data from *multiseq*, an R package under development in the [Stephens lab](http://stephenslab.uchicago.edu/) at the University of Chicago, in the [UCSC Genome Browser](http://genome.ucsc.edu/).
 
 This library builds extensively on the [genome](https://github.com/gmcvicker/genome) library by Graham McVicker. 
 
@@ -46,7 +46,11 @@ something like the following:
 
     # update your python path by adding $HOME/src/NGS_utils/python/lib to the end
     # this tells python where to find the NGS_utils library 
-    export PYTHONPATH=$PYTHONPATH:$HOME/src/NGS_utils/python/lib:$HOME/src/NGS_utils/python/script
+    export PYTHONPATH=$PYTHONPATH:$HOME/src/NGS_utils/python/lib
+
+    # update your path by adding $HOME/src/NGS_utils/python/script to the end
+    # this tells bash where to find the NGS_utils python scripts
+    export PATH=:$HOME/src/NGS_utils/python/script
     
     # specify the location of 'database' where the HDF5 files that you want to use are
     export GENOME_DB=/data/share/genome_db/
@@ -68,14 +72,24 @@ and may not execute your ~/.bashrc. To ensure that your jobs have the correct en
 you should be able to pass a flag to your cluster submission command (e.g. the -V flag to qsub).
 
 
-### simulationToTrackHub.py: example of usage
-This code has been created to plot in the UCSC Genome Browser some simulation data specific to our workflow. Our simulations produce a set of bigWig files that cover a small genomic region (chr5:131989505-132120576 in the example below). The code creates a Track Hub with the simulated data that can be visualized in the Genome Browser.
+### samplesheetToTrackHub.py: example of usage
+This code plots reads (in a bam, hdf5, wig or bigwig format) and significant intervals (bed or bigBed files) listed in a samplesheet in the UCSC Genome Browser. 
 
-From the terminal cd into the repository and type:
+A samplesheet should look something like this (see file ~/src/NGS_utils/data/sim/samplesheet.sim.txt):
 
-    python simulationToTrackHub.py --hub_name testNGS/sim data/sim/samplesheet.sim.txt 
+  SampleID Type Tissue Replicate Peaks ReadDepth bigWigPath
+  055A RNASeq 24hrShamControl 8 - 1550735 ./data/sim/055A.bw
+  055B RNASeq 24hr2uMsimvastatinLPDS 8 - 2350343 ./data/sim/055BNonNull.bw
+  056A RNASeq 24hrShamControl 9 - 1320166 ./data/sim/056A.bw
+  056B RNASeq 24hr2uMsimvastatinLPDS 9 - 1723647 ./data/sim/056BNonNull.bw
 
-If correctly executed, the python code will print the following message:
+The codes coverts the read tracks and the bed tracks into a UCSC track hub that can be visualized in the Genome Browser.
+
+If testNGS/sim is the name you want to give to the track hub and ~/src/NGS_utils/data/sim/samplesheet.sim.txt is the samplesheet file, then command:
+
+    python simulationToTrackHub.py --hub_name testNGS/sim ~/src/NGS_utils/data/sim/samplesheet.sim.txt 
+
+will create a track hub from the data the samplesheet is pointing to and will print the following message:
 
     go to http://genome.ucsc.edu/cgi-bin/hgHubConnect and click on the My Hubs window    
     copy paste the following string in the URL field
@@ -83,19 +97,11 @@ If correctly executed, the python code will print the following message:
     center the genome browser on the region of interest
     if the track is hidden click on show and then refresh
 
-The region of interest in this example data is chr5:131989505-132120576
+The region of interest in this example data is chr5:131989505-132120576.
+If the data the samplesheet is pointing to are large, execution of the code might require a lot of memory (se ql 10g on the PPS cluster).
 
 This is a screenshot of the data in the Genome Browser:
 ![Image](plots/sim.png?raw=true)
-
-### samplesheetToTrackHub.py: example of usage
-
-Make sure you have enough memory to run this command (use ql 10g on the PPS cluster)
-
-    course_repodir="/mnt/lustre/home/epantaleo/src/stat45800/"
-    samplesheet=$course_repodir"data/samplesheetEncode.txt"
-    python samplesheetToTrackHub.py $samplesheet Encode chr1</code></pre>
-
 
 ### multiseqToTrackHub.py: example of usage
 After running multiseq on a specified region (chr5:131989505-132120576 in the data/multiseq folder) we obtain 3 output files: *effect_mean_var.txt.gz* a file with two columns (first column a mean effect and second column squared standard error of the effect), *multiseq.effect.2sd.bed* and *multiseq.effect.3sd.bed*, two bed files containing significant intervals (as computed by multiseq) at 2 and 3 sd (respectively).

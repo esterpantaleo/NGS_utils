@@ -1,6 +1,6 @@
 chrom_file=$1
 if [ -z $chrom_file ]; then
-    echo "error: privide file with chormosome sizes"
+    echo "error: provide file with chormosome sizes"
     exit 1
 fi
 for i in `find . -name "*.bw"`; do

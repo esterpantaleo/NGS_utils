@@ -1,3 +1,4 @@
+#! /usr/bin/env python                                                                                  
 """
 bam2wiggle.py - convert bam to wig/bigwig file
 ==============================================
