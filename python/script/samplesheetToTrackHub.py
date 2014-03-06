@@ -61,23 +61,24 @@ def main():
         os.makedirs(assembly_dir)
     sampleids = samples['SampleID']
  
+    bigwig_tracks = []
     if 'bigWigPath' in samples.columns.values:
-        bigwig_tracks = samples['bigWigPath'].unique()
+        for bigwig_track in samples['bigWigPath']:
+            track_name = os.path.basename(bigwig_track)
+            shutil.copy2(bigwig_track, os.path.join(assembly_dir, track_name))
+            bigwig_tracks.append(track_name)
     elif 'h5RelPath' in samples.columns.values:
-        h5_files = samples['h5RelPath'].unique()
         #convert hdf5 files into bigWig
-        bigwig_tracks = []
-        for h5_track in h5_files:
-            bigwig_track = os.path.join(assembly_dir, os.path.basename(h5_track) + '.bw') 
+        for h5_track in samples['h5RelPath']:
+            track_name = os.path.basename(h5_track) + '.bw' 
             cmd = " ".join(["python h52bigwig.py",
                             "--assembly",
                             args.assembly,
                             h5_track,
                             args.chrom_file,
-                            bigwig_track])
+                            os.path.join(assembly_dir, track_name)])
             os.system(cmd)  
-            bigwig_tracks.append(bigwig_track)
-
+            bigwig_tracks.append(track_name)
     trackdb_file = os.path.join(args.assembly, 'trackDbFile.txt')
     f = open(os.path.join(hub_dir, 'genomes.txt'), 'w')
     f.write(" ".join(['genome', args.assembly]))
@@ -103,33 +104,30 @@ def main():
                      "priority 1\n"]))
     #if bigwig files cover a region smaller than 2^20
     #use viewLimits
-    cmd = "".join(["bigWigInfo ", bigwig_tracks[0], " | grep basesCovered | tr -d \",\"" ])
+    cmd = "".join(["bigWigInfo ", os.path.join(assembly_dir,bigwig_tracks[0]), " | grep basesCovered | tr -d \",\"" ])
     bigWigLength = int(os.popen(cmd).readlines()[0].split()[1])
     if bigWigLength<2**20:
         #find ymax over all bigwig files
         bigWigM=0
         for bigwig_track in bigwig_tracks:
-            cmd = "".join(["bigWigInfo -minMax ", bigwig_track])
+            cmd = "".join(["bigWigInfo -minMax ", os.path.join(assembly_dir,bigwig_track)])
             bigWigMax = int(float(os.popen(cmd).readlines()[0].split()[1]))
             bigWigM = max([bigWigM, bigWigMax])
         f.write("".join(["autoScale off\n",
-                                  "viewLimits 0:",str(bigWigM),"\n"]))
+                         "viewLimits 0:",str(bigWigM),"\n"]))
     else:
         f.write("autoScale on\n")
     f.write("dragAndDrop subtracks\n\n")
 
     counter=0
     for bigwig_track in bigwig_tracks:
-        track_name = os.path.basename(bigwig_track)
-        out_bigwig_track = os.path.join(assembly_dir, track_name)
-        shutil.copy2(bigwig_track, out_bigwig_track)
         f.write(" ".join(["track", sampleids[counter], "\n"]))
-        f.write("type bigWig\n")
         f.write("parent reads\n")
+        f.write("type bigWig\n")
         f.write("graphType points\n")
         f.write("visibility full\n")
         f.write("color 0,0,0\n")
-        f.write(" ".join(["bigDataUrl", track_name, "\n"]))
+        f.write(" ".join(["bigDataUrl", bigwig_track, "\n"]))
         f.write(" ".join(["shortLabel", sampleids[counter], "\n"]))
         f.write(" ".join(["longLabel", hub_name_string, sampleids[counter], "\n\n"]))
         counter+=1
@@ -142,18 +140,19 @@ def main():
             tissues = samples['Tissue'].unique() 
             bigbed_tracks = []
             for peaks_track in peaks_files:
+                track_name = os.path.basename(peaks_track)
                 if peaks_track.endswith('.bb'):
-                    bigbed_tracks.append(peaks_track)
+                    shutil.copy2(peaks_track, os.path.join(assembly_dir, track_name))
+                    bigbed_tracks.append(track_name)
                 else:
                     #convert bed file into bigBed file
-                    bigbed_track = os.path.join(assembly_dir, os.path.basename(peaks_track) + '.bb')
+                    bigbed_track = "".join([track_name, '.bb'])
                     cmd = " ".join(["bedToBigBed -type=bed6+4",
                                     peaks_track,
                                     args.chrom_file,
-                                    bigbed_track])
+                                    os.path.join(hub_dir, bigbed_track)])
                     os.system(cmd)
                     bigbed_tracks.append(bigbed_track) 
-                    
             #write the track hub
             f.write("".join(["track peaks\n",
                              "shortLabel peaks\n",
@@ -164,13 +163,12 @@ def main():
                              "dragAndDrop subtracks\n\n"]))
             counter=0
             for bigbed_track in bigbed_tracks:
-                track_name = os.path.basename(bigbed_track)
                 f.write(" ".join(["track", tissues[counter], "\n"]))
                 f.write("parent peaks\n")
                 f.write("type bigBed\n")
                 f.write("visibility full\n")
                 f.write("color 0,0,0\n")
-                f.write(" ".join(["bigDataUrl", track_name, "\n"]))
+                f.write(" ".join(["bigDataUrl", bigbed_track, "\n"]))
                 f.write(" ".join(["shortLabel", tissues[counter], "\n"]))
                 f.write(" ".join(["longLabel", hub_name_string, tissues[counter], "\n\n"]))
                 counter+=1
