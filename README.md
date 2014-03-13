@@ -106,6 +106,7 @@ After running multiseq on a specified region (chr5:131989505-132120576 in the ex
 The python script multiseqToTrackHub.py creates a track hub with:
 - the effect and the respective standard error 
 - the significant intervals at 2 and 3 sd 
+
 in the UCSC Genome Browser.
  
     python multiseqToTrackHub.py --hub_name testNGS/multiseq --multiseq_folder data/multiseq chr5:131989505-132120576 data/chromosome.lengths.hg19.txt
