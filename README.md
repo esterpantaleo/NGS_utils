@@ -115,10 +115,10 @@ in the UCSC Genome Browser. If multiseq output is in folder ./data/multiseq and 
 
 will create a track hub named *multiseq* in the "some https address/testNGS/" folder and will print the following message:
   
-   go to http://genome.ucsc.edu/cgi-bin/hgHubConnect and click on the My Hubs window
-   copy paste the following string in the URL field
-   "some https address"/testNGS/multiseq/hub.txt
-   note: center your genome browser around chr5:131989505-132120576 and make track visible
+    go to http://genome.ucsc.edu/cgi-bin/hgHubConnect and click on the My Hubs window
+    copy paste the following string in the URL field
+    "some https address"/testNGS/multiseq/hub.txt
+    note: center your genome browser around chr5:131989505-132120576 and make track visible
 
 This is a screenshot of the track hub from the Genome Browser:
 ![Image](plots/multiseq.png?raw=true)
