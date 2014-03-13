@@ -4,7 +4,7 @@ This repo contains a Python library, *NGS_utils*, to plot input data and output 
 
 This library builds extensively on the [genome](https://github.com/gmcvicker/genome) library by Graham McVicker. 
 
-This document summarizes how to setup this software system and how to use the python scripts simulationToTrackHub.py, samplesheetToTrackHub.py and multiseqToTrackHub.py . If you have any questions or run into any difficulty, please don't hesitate to contact me!
+This document summarizes how to setup this software system and how to use the python scripts samplesheetToTrackHub.py and multiseqToTrackHub.py . If you have any questions or run into any difficulty, please don't hesitate to contact me!
 
 # Setup
 
@@ -73,23 +73,21 @@ you should be able to pass a flag to your cluster submission command (e.g. the -
 
 
 ### samplesheetToTrackHub.py: example of usage
-This code plots reads (in a bam, hdf5, wig or bigwig format) and significant intervals (bed or bigBed files) listed in a samplesheet in the UCSC Genome Browser. 
+This code coverts the read tracks and the bed tracks listed in a samplesheet (see below) into a UCSC track hub that can be visualized in the Genome Browser. Read tracks can be in bam, hdf5, wig or bigwig format and significant intervals can be in bed format.
 
-A samplesheet should look something like this (see file ~/src/NGS_utils/data/sim/samplesheet.sim.txt):
+The samplesheet should have the following format (see file ~/src/NGS_utils/data/sim/samplesheet.sim.txt):
 
-  SampleID Type Tissue Replicate Peaks ReadDepth bigWigPath
-  055A RNASeq 24hrShamControl 8 - 1550735 ./data/sim/055A.bw
-  055B RNASeq 24hr2uMsimvastatinLPDS 8 - 2350343 ./data/sim/055BNonNull.bw
-  056A RNASeq 24hrShamControl 9 - 1320166 ./data/sim/056A.bw
-  056B RNASeq 24hr2uMsimvastatinLPDS 9 - 1723647 ./data/sim/056BNonNull.bw
+    SampleID Type Tissue Replicate Peaks ReadDepth bigWigPath
+    055A RNASeq 24hrShamControl 8 - 1550735 ./data/sim/055A.bw
+    055B RNASeq 24hr2uMsimvastatinLPDS 8 - 2350343 ./data/sim/055BNonNull.bw
+    056A RNASeq 24hrShamControl 9 - 1320166 ./data/sim/056A.bw
+    056B RNASeq 24hr2uMsimvastatinLPDS 9 - 1723647 ./data/sim/056BNonNull.bw
 
-The codes coverts the read tracks and the bed tracks into a UCSC track hub that can be visualized in the Genome Browser.
-
-If testNGS/sim is the name you want to give to the track hub and ~/src/NGS_utils/data/sim/samplesheet.sim.txt is the samplesheet file, then command:
+If ~/src/NGS_utils/data/sim/samplesheet.sim.txt is our samplesheet and we use /testNGS/sim as the output track hub then:
 
     python simulationToTrackHub.py --hub_name testNGS/sim ~/src/NGS_utils/data/sim/samplesheet.sim.txt 
 
-will create a track hub from the data the samplesheet is pointing to and will print the following message:
+will create a track hub in "some https address"/testNGS/sim/" and will print the following message:
 
     go to http://genome.ucsc.edu/cgi-bin/hgHubConnect and click on the My Hubs window    
     copy paste the following string in the URL field
@@ -97,18 +95,17 @@ will create a track hub from the data the samplesheet is pointing to and will pr
     center the genome browser on the region of interest
     if the track is hidden click on show and then refresh
 
-The region of interest in this example data is chr5:131989505-132120576.
-If the data the samplesheet is pointing to are large, execution of the code might require a lot of memory (se ql 10g on the PPS cluster).
+If the read tracks or the bed files are large, make sure enough memory is available to run simulationToTrackHub.py (use ql 10g on the PPS cluster).
 
 This is a screenshot of the data in the Genome Browser:
 ![Image](plots/sim.png?raw=true)
 
 ### multiseqToTrackHub.py: example of usage
-After running multiseq on a specified region (chr5:131989505-132120576 in the data/multiseq folder) we obtain 3 output files: *effect_mean_var.txt.gz* a file with two columns (first column a mean effect and second column squared standard error of the effect), *multiseq.effect.2sd.bed* and *multiseq.effect.3sd.bed*, two bed files containing significant intervals (as computed by multiseq) at 2 and 3 sd (respectively).
+After running multiseq on a specified region (chr5:131989505-132120576 in the example folder  (~/src/NGS_utils/data/multiseq) we obtain 3 output files: *effect_mean_var.txt.gz* a file with two columns (first column a mean effect and second column squared standard error of the effect), *multiseq.effect.2sd.bed* and *multiseq.effect.3sd.bed*, two bed files containing significant intervals (as computed by multiseq) at 2 and 3 sd (respectively).
 
 The python script multiseqToTrackHub.py creates a track hub with:
-1. the effect and the respective standard error 
-2. the significant intervals at 2 and 3 sd 
+    1. the effect and the respective standard error 
+    2. the significant intervals at 2 and 3 sd 
 in the UCSC Genome Browser.
  
     python multiseqToTrackHub.py --hub_name testNGS/multiseq --multiseq_folder data/multiseq chr5:131989505-132120576 data/chromosome.lengths.hg19.txt
@@ -120,5 +117,5 @@ If correctly executed, the python code will print the following message:
    "some https address"/testNGS/multiseq/hub.txt
    note: center your genome browser around chr5:131989505-132120576 and make track visible
 
-This is a screenshot of output from multiseq in the Genome Browser:
+This is a screenshot of the track hub from the Genome Browser:
 ![Image](plots/multiseq.png?raw=true)
