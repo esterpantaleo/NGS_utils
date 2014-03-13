@@ -101,7 +101,7 @@ This is a screenshot of the data in the Genome Browser:
 ![Image](plots/sim.png?raw=true)
 
 ### multiseqToTrackHub.py: example of usage
-After running multiseq on a specified region (chr5:131989505-132120576 in the example folder  (~/src/NGS_utils/data/multiseq) we obtain 3 output files: *effect_mean_var.txt.gz* a file with two columns (first column a mean effect and second column squared standard error of the effect), *multiseq.effect.2sd.bed* and *multiseq.effect.3sd.bed*, two bed files containing significant intervals (as computed by multiseq) at 2 and 3 sd (respectively).
+After running multiseq on a specified region (chr5:131989505-132120576 in the example folder ~/src/NGS_utils/data/multiseq) we obtain 3 output files: *effect_mean_var.txt.gz* a file with two columns (first column a mean effect and second column squared standard error of the effect), *multiseq.effect.2sd.bed* and *multiseq.effect.3sd.bed*, two bed files containing significant intervals (as computed by multiseq) at 2 and 3 sd (respectively).
 
 The python script multiseqToTrackHub.py creates a track hub with:
 - the effect and the respective standard error 
