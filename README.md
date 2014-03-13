@@ -101,19 +101,19 @@ This is a screenshot of the data in the Genome Browser:
 ![Image](plots/sim.png?raw=true)
 
 ### multiseqToTrackHub.py: example of usage
-After running multiseq on a specified region (chr5:131989505-132120576 in the example folder ~/src/NGS_utils/data/multiseq) we obtain 3 output files: *effect_mean_var.txt.gz* a file with two columns (first column a mean effect and second column squared standard error of the effect), *multiseq.effect.2sd.bed* and *multiseq.effect.3sd.bed*, two bed files containing significant intervals (as computed by multiseq) at 2 and 3 sd (respectively).
+When running multiseq on a specific region (chr5:131989505-132120576 in the example folder ~/src/NGS_utils/data/multiseq) it outputs 3 files: 
+-*effect_mean_var.txt.gz*:  a file with two columns, first column a mean effect and second column squared standard error of the effect)
+-*multiseq.effect.2sd.bed* and *multiseq.effect.3sd.bed*: two bed files containing significant intervals (as computed by multiseq) at 2 and 3 sd, respectively.
 
 The python script multiseqToTrackHub.py creates a track hub with:
 - the effect and the respective standard error 
 - the significant intervals at 2 and 3 sd 
 
-in the UCSC Genome Browser.
-
-If correctly executed, the python code 
+in the UCSC Genome Browser. If multiseq output is in folder ./data/multiseq and ./data/chromosome.lengths.hg19.txt is a file with chromosome names and lengths, then:
 
     python multiseqToTrackHub.py --hub_name testNGS/multiseq --multiseq_folder data/multiseq chr5:131989505-132120576 data/chromosome.lengths.hg19.txt
 
-will print the following message:
+will create a track hub named *multiseq* in the "some https address/testNGS/" and will print the following message:
   
    go to http://genome.ucsc.edu/cgi-bin/hgHubConnect and click on the My Hubs window
    copy paste the following string in the URL field
