@@ -106,14 +106,14 @@ When running multiseq on a specific region (chr5:131989505-132120576 in the exam
 - *multiseq.effect.2sd.bed* and *multiseq.effect.3sd.bed*: two bed files containing significant intervals (as computed by multiseq) at 2 and 3 sd, respectively.
 
 The python script multiseqToTrackHub.py creates a track hub with:
-- the effect and the respective standard error 
-- the significant intervals at 2 and 3 sd 
+- the effect +- 2 standard errors 
+- the significant intervals at 2 sd 
 
 in the UCSC Genome Browser. If multiseq output is in folder ./data/multiseq and ./data/chromosome.lengths.hg19.txt is a file with chromosome names and lengths, then:
 
     python multiseqToTrackHub.py --hub_name testNGS/multiseq --multiseq_folder data/multiseq chr5:131989505-132120576 data/chromosome.lengths.hg19.txt
 
-will create a track hub named *multiseq* in the "some https address/testNGS/" and will print the following message:
+will create a track hub named *multiseq* in the "some https address/testNGS/" folder and will print the following message:
   
    go to http://genome.ucsc.edu/cgi-bin/hgHubConnect and click on the My Hubs window
    copy paste the following string in the URL field
