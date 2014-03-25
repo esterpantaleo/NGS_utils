@@ -40,7 +40,7 @@ import sys
 import numpy as np
 import argparse
 import tempfile
-import NGS_utils.utils
+import NGS_utils
 import shutil
 #import subprocess
 import warnings
@@ -190,34 +190,16 @@ def main():
     shutil.rmtree(tmpdir)
 
     #make track hub
-    #write genomes file
-    trackdb_file = os.path.join(assembly_dir, 'trackDbFile.txt')
-    f = open(os.path.join(hub_dir, 'genomes.txt'), 'w')
-    f.write(" ".join(['genome', args.assembly]))
-    f.write("\n")
-    f.write("".join(['trackDb ', args.assembly, "/trackDbFile.txt"]))
-    f.write("\n")
-    f.close()
-    #write hub file
-    f = open(os.path.join(hub_dir, 'hub.txt'), 'w')
-    f.write(" ".join(['hub', hub_name_string]))
-    f.write("\n")
-    f.write(" ".join(['shortLabel', hub_name_string]))
-    f.write("\n")
-    f.write(" ".join(['longLabel', hub_name_string]))
-    f.write("\n")
-    f.write("genomesFile genomes.txt\n")
-    f.write("email esterpantaleo@gmail.com\n")
-    f.close()
+    writeTrackHubSkeleton(hub_dir, args.assembly, hub_name_string, "esterpantaleo@gmail.com")
     #write trackdb_file
-    f = open(os.path.join(hub_dir, trackdb_file), 'w')
+    f = open(os.path.join(assembly_dir, 'trackDbFile.txt'), 'w')
     #plot effect size
     f.write("".join(["track SuperTrack\n",
                      "shortLabel multiseq\n",
                      "longLabel Plot of multiseq effect 2 sd\n",
                      "superTrack on none\n",
-                     "priority 1\n\n"]))
-    f.write("".join(["track CompositeTrack\n",
+                     "priority 1\n\n",
+                     "track CompositeTrack\n",
                      "container multiWig\n",
                      "configurable on\n",
                      "shortLabel Effect\n",
@@ -252,25 +234,10 @@ def main():
 
     #plot significant region
     if (no_bed==False):
-        f.write("track SuperTrackBed\n")
-        f.write("shortLabel multiseq_signal\n")
-        f.write("longLabel multiseq signal\n")
-        f.write("superTrack on none\n")
-        f.write("priority 2\n\n")
-        
-        f.write("track signal1\n")
-        f.write("type bigBed\n")
-        f.write("shortLabel multiseq_signal\n")
-        f.write("longLabel multiseq signal 2sd\n")
-        f.write("parent SuperTrackBed\n")
-        f.write("visibility full\n")
-        f.write("bigDataUrl multiseq_bed_file.bb\n")
-        f.write("color 255,0,0\n")
+        writeBedSuperTrack("SuperBedTrack", "multiseq_signal", "multiseq signal", ["multiseq_bed_file.bb"], ["multiseq_signal"], ["multiseq signal 2sd"], "255,0,0")
+
     f.close()
 
-    print "go to http://genome.ucsc.edu/cgi-bin/hgHubConnect and click on the My Hubs window"
-    print "copy paste the following string in the URL field"
-    print "%s/%s/%s" %(args.http_address, args.hub_name, 'hub.txt')
-    print "note: center your genome browser around %s and make track visible" %args.region
+    printGoToMessage(args.hub_name, hub_dir, args.http_address, args.region)
 
 main()

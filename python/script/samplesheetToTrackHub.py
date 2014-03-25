@@ -3,6 +3,7 @@
 import os
 import argparse
 import pandas as pd
+import NGS_utils
 import shutil
 
 def parse_args():
@@ -79,24 +80,10 @@ def main():
                             os.path.join(assembly_dir, track_name)])
             os.system(cmd)  
             bigwig_tracks.append(track_name)
-    trackdb_file = os.path.join(args.assembly, 'trackDbFile.txt')
-    f = open(os.path.join(hub_dir, 'genomes.txt'), 'w')
-    f.write(" ".join(['genome', args.assembly]))
-    f.write("\n")
-    f.write("".join(['trackDb ', args.assembly, "/trackDbFile.txt"]))
-    f.write("\n")
-    f.close()
-    f = open(os.path.join(hub_dir, 'hub.txt'), 'w')
-    f.write(" ".join(['hub', hub_name_string]))
-    f.write("\n")
-    f.write(" ".join(['shortLabel', hub_name_string]))
-    f.write("\n")
-    f.write(" ".join(['longLabel', hub_name_string]))
-    f.write("\n")
-    f.write("genomesFile genomes.txt\n")
-    f.write("email esterpantaleo@gmail.com\n")
-    f.close()
-    f = open(os.path.join(hub_dir, trackdb_file), 'w')
+    
+    writeTrackHubSkeleton(hub_dir, args.assembly, hub_name_string, "esterpantaleo@gmail.com")
+    
+    f = open(os.path.join(args.assembly, 'trackDbFile.txt'), 'w')
     f.write("".join(["track reads\n"
                      "shortLabel reads\n",
                      "longLabel reads\n",
@@ -154,29 +141,8 @@ def main():
                     os.system(cmd)
                     bigbed_tracks.append(bigbed_track) 
             #write the track hub
-            f.write("".join(["track peaks\n",
-                             "shortLabel peaks\n",
-                             "longLabel peaks\n",
-                             "superTrack on none\n",
-                             "priority 2\n",
-                             "autoScale on\n",
-                             "dragAndDrop subtracks\n\n"]))
-            counter=0
-            for bigbed_track in bigbed_tracks:
-                f.write(" ".join(["track", tissues[counter], "\n"]))
-                f.write("parent peaks\n")
-                f.write("type bigBed\n")
-                f.write("visibility full\n")
-                f.write("color 0,0,0\n")
-                f.write(" ".join(["bigDataUrl", bigbed_track, "\n"]))
-                f.write(" ".join(["shortLabel", tissues[counter], "\n"]))
-                f.write(" ".join(["longLabel", hub_name_string, tissues[counter], "\n\n"]))
-                counter+=1
+            writeBedSuperTrack("peaks", "peaks", "peaks", bigbed_tracks, tissues, ["".join([hub_name_string,i]) for i in tissues], "0,0,0")
+            
+    printGoToMessage(args.hub_name, hub_dir, args.http_address)
 
-    print "go to http://genome.ucsc.edu/cgi-bin/hgHubConnect and click on the My Hubs window"
-    print "copy paste the following string in the URL field"
-    print "%s/%s/%s" %(args.http_address, args.hub_name, 'hub.txt')
-    print "center the genome browser on the region of interest"
-    print "if the track is hidden click on show and then refresh"
-    print "(track has been saved in folder %s)" %hub_dir
 main()
