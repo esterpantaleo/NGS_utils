@@ -64,6 +64,10 @@ printGoToMessage <- function(hub_name, hub_dir, http_address, region=NULL){
 
 #' @return: no return; it prints a Track Hub folder
 #' @examples
+
+
+
+
 #' hdf5ToBigWig(in.h5, chromosome_file, out)
 #' converts in.h5 into out.bw using the dictionary in chromosome_file
 #' 
@@ -77,6 +81,7 @@ hdf5ToBigWig <- function(h5_track, chrom_file, bigWig_track, assembly="hg19"){
         myvalues = h5read(h5file, chromosomes[i,1], index=list(1:chromosomes[i,2]))
         print(paste("processing chromosome ", chromosomes[i,1]))
         cat("fixedStep chrom=%s start=1 step=1", myvalues, sep="\n", file=tmpfile_wig, append=TRUE)
+        break
     }
     system(paste("wigToBigWig", tmpfile_wig, chrom_file, bigWig_track))
     file.remove(tmpfile_wig)
